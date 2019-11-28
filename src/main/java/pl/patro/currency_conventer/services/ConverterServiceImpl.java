@@ -16,6 +16,9 @@ public class ConverterServiceImpl implements ConverterService {
     @Override
     public double convertCurrencies(String from, String to, double amount) throws NotFoundException {
        ConvertValues convertValues = actualCurrencyService.getValues(from,to);
+       if(convertValues.getTo()==0){
+           throw new ArithmeticException("Value of "+ to +" =0!");
+       }
        return amount * convertValues.getFrom()/convertValues.getTo();
     }
 }

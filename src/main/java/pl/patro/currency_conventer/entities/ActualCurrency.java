@@ -35,6 +35,15 @@ public class ActualCurrency {
     @JsonIgnore
     private ExchangeRatesTable exchangeRatesTable;
 
+    public ActualCurrency() {
+    }
+
+    public ActualCurrency(String code, double mid, ExchangeRatesTable exchangeRatesTable) {
+        this.code = code;
+        this.mid = mid;
+        this.exchangeRatesTable = exchangeRatesTable;
+    }
+
     public Long getId() {
         return id;
     }

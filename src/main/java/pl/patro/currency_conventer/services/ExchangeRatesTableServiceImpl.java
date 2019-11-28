@@ -1,6 +1,7 @@
 package pl.patro.currency_conventer.services;
 
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +24,10 @@ public class ExchangeRatesTableServiceImpl implements ExchangeRatesTableService 
         this.exchangeRatesTableRepository = exchangeRatesTableRepository;
         this.requestLogService = requestLogService;
     }
-
+    @Value("${UPDATE_HOUR}")
+    int hour;
+    @Value("${UPDATE_MINUTE}")
+    int minute;
 
     @Override
     public ExchangeRatesTable getActualATableFromWeb() throws NotFoundException {
@@ -45,8 +49,9 @@ public class ExchangeRatesTableServiceImpl implements ExchangeRatesTableService 
 
     @Override
     public ExchangeRatesTable getActualTable() throws NotFoundException {
+
         Optional<ExchangeRatesTable> optionalExchangeRatesTableService;
-        if(LocalTime.now().isBefore(LocalTime.of(11,45,0))){
+        if(LocalTime.now().isBefore(LocalTime.of(hour,minute,0))){
           optionalExchangeRatesTableService =  exchangeRatesTableRepository.findByEffectiveDate(LocalDate.now().minusDays(1).toString());
         }else{
           optionalExchangeRatesTableService = exchangeRatesTableRepository.findByEffectiveDate(LocalDate.now().toString());

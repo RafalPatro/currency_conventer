@@ -25,8 +25,8 @@ public class ActualCurrencyServiceImpl implements ActualCurrencyService {
     public ConvertValues getValues(String from, String to) throws NotFoundException {
         ConvertValues convertValues = new ConvertValues();
         ExchangeRatesTable exchangeRatesTable = exchangeRatesTableService.getActualTable();
-        if (!from.equals("PLN")) {
-            Optional<Double> actualCurrencyFrom = exchangeRatesTable.getRates().stream().filter(x -> x.getCode().equals(from)).findFirst().map(ActualCurrency::getMid);
+        if (!from.toUpperCase().equals("PLN")) {
+            Optional<Double> actualCurrencyFrom = exchangeRatesTable.getRates().stream().filter(x -> x.getCode().equals(from.toUpperCase())).findFirst().map(ActualCurrency::getMid);
             if (actualCurrencyFrom.isPresent()) {
                 convertValues.setFrom(actualCurrencyFrom.get());
             } else {
@@ -35,8 +35,8 @@ public class ActualCurrencyServiceImpl implements ActualCurrencyService {
         } else {
             convertValues.setFrom(1);
         }
-        if (!to.equals("PLN")) {
-            Optional<Double> actualCurrencyTo = exchangeRatesTable.getRates().stream().filter(x -> x.getCode().equals(to)).findFirst().map(ActualCurrency::getMid);
+        if (!to.toUpperCase().equals("PLN")) {
+            Optional<Double> actualCurrencyTo = exchangeRatesTable.getRates().stream().filter(x -> x.getCode().equals(to.toUpperCase())).findFirst().map(ActualCurrency::getMid);
             if (actualCurrencyTo.isPresent()) {
                 convertValues.setTo(actualCurrencyTo.get());
             } else {

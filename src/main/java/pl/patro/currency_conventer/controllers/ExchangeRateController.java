@@ -54,6 +54,8 @@ public class ExchangeRateController {
             result = converterService.convertCurrencies(from, to, amount);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (ArithmeticException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         requestLogService.saveIncoming("/convert/{from}/{to}/{amount}", from + " " + to + " " + amount,200);
         return new ResponseEntity<>(result,HttpStatus.OK);
