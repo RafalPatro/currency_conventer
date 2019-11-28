@@ -10,7 +10,7 @@ create table if not exists exchange_rates
 		primary key (rate_id)
 );
 
-create table if not exists actual_curriences
+create table if not exists actual_currencies
 (
 	currency_id int auto_increment,
 	currency varchar(50) null,
