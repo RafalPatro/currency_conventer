@@ -47,12 +47,12 @@ public class ExchangeRatesTableServiceImpl implements ExchangeRatesTableService 
     public ExchangeRatesTable getActualTable() throws NotFoundException {
         Optional<ExchangeRatesTable> optionalExchangeRatesTableService;
         if(LocalTime.now().isBefore(LocalTime.of(11,45,0))){
-          optionalExchangeRatesTableService =  exchangeRatesTableRepository.findByEffectiveDate(LocalDate.now().minusDays(1));
+          optionalExchangeRatesTableService =  exchangeRatesTableRepository.findByEffectiveDate(LocalDate.now().minusDays(1).toString());
         }else{
-          optionalExchangeRatesTableService = exchangeRatesTableRepository.findByEffectiveDate(LocalDate.now());
+          optionalExchangeRatesTableService = exchangeRatesTableRepository.findByEffectiveDate(LocalDate.now().toString());
         }
         if(optionalExchangeRatesTableService.isEmpty()){
-            return getActualATableFromWeb();
+             return getActualATableFromWeb();
         }else return optionalExchangeRatesTableService.get();
     }
 

@@ -2,6 +2,7 @@ package pl.patro.currency_conventer.services;
 
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
+import pl.patro.currency_conventer.entities.ExchangeRatesTable;
 import pl.patro.currency_conventer.pojo.ConvertValues;
 import pl.patro.currency_conventer.entities.ActualCurrency;
 import pl.patro.currency_conventer.repositories.ActualCurrencyRepository;
@@ -12,19 +13,22 @@ import java.util.Optional;
 public class ActualCurrencyServiceImpl implements ActualCurrencyService {
 
     private final ActualCurrencyRepository actualCurrencyRepository;
+    private final ExchangeRatesTableService exchangeRatesTableService;
 
-    public ActualCurrencyServiceImpl(ActualCurrencyRepository actualCurrencyRepository) {
+    public ActualCurrencyServiceImpl(ActualCurrencyRepository actualCurrencyRepository, ExchangeRatesTableService exchangeRatesTableService) {
         this.actualCurrencyRepository = actualCurrencyRepository;
+        this.exchangeRatesTableService = exchangeRatesTableService;
     }
 
 
     @Override
     public ConvertValues getValues(String from, String to) throws NotFoundException {
         ConvertValues convertValues = new ConvertValues();
+        ExchangeRatesTable exchangeRatesTable = exchangeRatesTableService.getActualTable();
         if (!from.equals("PLN")) {
-            Optional<ActualCurrency> actualCurrencyFrom = actualCurrencyRepository.findByCode(from);
+            Optional<Double> actualCurrencyFrom = exchangeRatesTable.getRates().stream().filter(x -> x.getCode().equals(from)).findFirst().map(ActualCurrency::getMid);
             if (actualCurrencyFrom.isPresent()) {
-                convertValues.setFrom(actualCurrencyFrom.get().getMid());
+                convertValues.setFrom(actualCurrencyFrom.get());
             } else {
                 throw new NotFoundException("there is no currency: " + from);
             }
@@ -32,9 +36,9 @@ public class ActualCurrencyServiceImpl implements ActualCurrencyService {
             convertValues.setFrom(1);
         }
         if (!to.equals("PLN")) {
-            Optional<ActualCurrency> actualCurrencyTo = actualCurrencyRepository.findByCode(to);
+            Optional<Double> actualCurrencyTo = exchangeRatesTable.getRates().stream().filter(x -> x.getCode().equals(to)).findFirst().map(ActualCurrency::getMid);
             if (actualCurrencyTo.isPresent()) {
-                convertValues.setTo(actualCurrencyTo.get().getMid());
+                convertValues.setTo(actualCurrencyTo.get());
             } else {
                 throw new NotFoundException("There is no currency: " + to);
             }
